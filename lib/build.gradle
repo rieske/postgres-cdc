@@ -1,0 +1,31 @@
+plugins {
+    id("java-library")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("org.slf4j:slf4j-api:2.0.9")
+
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.15.3"))
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            dependencies {
+                implementation("org.testcontainers:postgresql:1.19.1")
+                implementation("org.assertj:assertj-core:3.24.2")
+                implementation("org.flywaydb:flyway-core:9.22.3")
+                implementation("org.awaitility:awaitility:4.2.0")
+                implementation("ch.qos.logback:logback-classic:1.4.11")
+            }
+        }
+    }
+}

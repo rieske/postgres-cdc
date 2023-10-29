@@ -1,0 +1,8 @@
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+rootProject.name = 'postgres-cdc'
+
+include('lib')

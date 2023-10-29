@@ -1,0 +1,20 @@
+---
+version: '2.4'
+
+services:
+  database:
+    build: lib/src/test/resources/postgres
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test_db
+    volumes:
+      - data:/var/lib/postgresql/data
+    network_mode: host
+    command: [ "postgres", "-c", "wal_level=logical" ]
+
+volumes:
+  data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
