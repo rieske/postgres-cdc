@@ -52,6 +52,8 @@ public class PostgresReplicationListener {
         });
 
         this.walStreamConsumer = new WalStreamConsumer(this::createConnection, replicationSlotName, consumer);
+        Runtime.getRuntime().addShutdownHook(new Thread(walStreamConsumer::stop));
+
         replicationStreamExecutor.submit(walStreamConsumer);
     }
 
@@ -92,8 +94,7 @@ public class PostgresReplicationListener {
     public void stop() {
         LOGGER.info("Stopping replication stream listener on slot {}", replicationSlotName);
         walStreamConsumer.stop();
-
-        replicationStreamExecutor.shutdown();
+        this.replicationStreamExecutor.shutdown();
         try {
             if (!replicationStreamExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
                 replicationStreamExecutor.shutdownNow();
@@ -147,19 +148,20 @@ class WalStreamConsumer implements Runnable {
                     wait();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    LOGGER.info("WAL stream consumer was interrupted while not yet started");
+                    LOGGER.info("Replication slot {} consumer was interrupted while not yet started", replicationSlotName);
                     return;
                 }
             }
         }
-        try (PgConnection connection = connectionSupplier.get()){
+        try (PgConnection connection = connectionSupplier.get()) {
             try (PGReplicationStream stream = getStream(connection)) {
                 LOGGER.info("Connected to replication slot {}", replicationSlotName);
                 consumeStream(stream);
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception thrown in replication listener loop", e);
+            LOGGER.warn("Exception thrown in replication slot {} listener loop", replicationSlotName, e);
         }
+        LOGGER.info("Replication slot {} consumer was stopped", replicationSlotName);
     }
 
     private void consumeStream(PGReplicationStream stream) throws SQLException {
