@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        postgres: [ 16.0, 15.4, 14.9, 13.12]
+        postgres: ["16.0", "15.4", "14.9", "13.12"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
