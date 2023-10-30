@@ -2,14 +2,13 @@ package io.github.rieske.cdc;
 
 import org.postgresql.PGConnection;
 import org.postgresql.PGProperty;
+import org.postgresql.jdbc.PgConnection;
 import org.postgresql.replication.PGReplicationStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -57,10 +56,9 @@ public class PostgresReplicationListener {
     }
 
     public void createReplicationSlot() {
-        try (Connection con = createConnection()) {
+        try (PgConnection connection = createConnection()) {
             LOGGER.info("Creating replications slot {}", replicationSlotName);
-            PGConnection replConnection = con.unwrap(PGConnection.class);
-            replConnection.getReplicationAPI()
+            connection.getReplicationAPI()
                     .createReplicationSlot()
                     .logical()
                     .withSlotName(replicationSlotName)
@@ -77,12 +75,10 @@ public class PostgresReplicationListener {
     }
 
     public void dropReplicationSlot() {
-        try (Connection connection = createConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT pg_drop_replication_slot(?)")
-        ) {
+        try (PgConnection connection = createConnection()) {
             LOGGER.info("Dropping replications slot {}", replicationSlotName);
-            statement.setString(1, replicationSlotName);
-            statement.execute();
+            connection.getReplicationAPI().dropReplicationSlot(replicationSlotName);
+            LOGGER.info("Dropped replications slot {}", replicationSlotName);
         } catch (SQLException e) {
             throw new RuntimeException("Could not drop replication slot", e);
         }
@@ -108,9 +104,9 @@ public class PostgresReplicationListener {
         }
     }
 
-    private Connection createConnection() {
+    private PgConnection createConnection() {
         try {
-            return DriverManager.getConnection(jdbcUrl, databaseConnectionProperties);
+            return DriverManager.getConnection(jdbcUrl, databaseConnectionProperties).unwrap(PgConnection.class);
         } catch (SQLException e) {
             throw new RuntimeException("Could not create connection", e);
         }
@@ -120,13 +116,13 @@ public class PostgresReplicationListener {
 class WalStreamConsumer implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WalStreamConsumer.class);
 
-    private final Supplier<Connection> connectionSupplier;
+    private final Supplier<PgConnection> connectionSupplier;
     private final String replicationSlotName;
     private final Consumer<ByteBuffer> consumer;
 
     private volatile boolean running = false;
 
-    WalStreamConsumer(Supplier<Connection> connectionSupplier, String replicationSlotName, Consumer<ByteBuffer> consumer) {
+    WalStreamConsumer(Supplier<PgConnection> connectionSupplier, String replicationSlotName, Consumer<ByteBuffer> consumer) {
         this.connectionSupplier = connectionSupplier;
         this.replicationSlotName = replicationSlotName;
         this.consumer = consumer;
@@ -156,10 +152,8 @@ class WalStreamConsumer implements Runnable {
                 }
             }
         }
-        try (Connection connection = connectionSupplier.get()){
-            PGConnection replConnection = connection.unwrap(PGConnection.class);
-
-            try (PGReplicationStream stream = getStream(replConnection)) {
+        try (PgConnection connection = connectionSupplier.get()){
+            try (PGReplicationStream stream = getStream(connection)) {
                 LOGGER.info("Connected to replication slot {}", replicationSlotName);
                 consumeStream(stream);
             }

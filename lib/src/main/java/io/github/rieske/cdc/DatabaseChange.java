@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DatabaseChange {
+public class DatabaseChange {
     public final Action action;
     public final String schema;
     public final String table;
@@ -41,7 +41,7 @@ class DatabaseChange {
                 '}';
     }
 
-    enum Action {
+    public enum Action {
         @JsonProperty("I")
         INSERT,
         @JsonProperty("U")
