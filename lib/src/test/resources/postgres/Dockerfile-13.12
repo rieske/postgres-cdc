@@ -1,0 +1,12 @@
+FROM postgres:13.12-alpine
+
+ENV WAL2JSON_TAG=wal2json_2_5
+
+# Compile and install the wal2json plugin
+RUN apk add --no-cache --virtual .build-deps clang15 llvm15 git make musl-dev \
+    && git clone --depth 1 --branch $WAL2JSON_TAG https://github.com/eulerto/wal2json \
+    && (cd /wal2json && make && make install) \
+    && rm -rf wal2json \
+    && apk del .build-deps
+
+COPY postgresql.conf.sample /usr/local/share/postgresql/postgresql.conf.sample

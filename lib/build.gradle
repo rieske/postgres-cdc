@@ -26,6 +26,13 @@ testing {
                 implementation("org.awaitility:awaitility:4.2.0")
                 implementation("ch.qos.logback:logback-classic:1.4.11")
             }
+            targets {
+                all {
+                    testTask.configure {
+                        inputs.property("POSTGRES_VERSION", System.getenv("POSTGRES_VERSION")).optional(true)
+                    }
+                }
+            }
         }
     }
 }

@@ -1,0 +1,10 @@
+name: branch
+
+on:
+  push:
+    branches-ignore: [ "master" ]
+
+jobs:
+  build:
+    name: build
+    uses: ./.github/workflows/build.yml

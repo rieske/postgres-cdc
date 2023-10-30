@@ -28,9 +28,11 @@ public class DatabaseExtension implements BeforeEachCallback, AfterEachCallback 
     private static final int DB_PORT = 5432;
     private static final String DEFAULT_DATABASE = "postgres";
 
+    private static String POSTGRES_VERSION = System.getenv("POSTGRES_VERSION");
+
     private static final GenericContainer<?> DB_CONTAINER = new GenericContainer<>(
             new ImageFromDockerfile("postgres-cdc-test")
-                    .withDockerfile(Path.of("./src/test/resources/postgres/Dockerfile"))
+                    .withDockerfile(Path.of("./src/test/resources/postgres/Dockerfile-" + (POSTGRES_VERSION == null ? "16.0" : POSTGRES_VERSION)))
     ).withExposedPorts(DB_PORT)
             .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix("database"))
             .withEnv(Map.of(

@@ -1,0 +1,56 @@
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Build
+        uses: burrunan/gradle-cache-action@v1
+        with:
+          arguments: build
+
+  cross-version-tests:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        postgres: [ 16.0, 15.4, 14.9, 13.12]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Test PostgreSQL versions
+        uses: burrunan/gradle-cache-action@v1
+        env:
+          POSTGRES_VERSION: ${{ matrix.postgres }}
+        with:
+          arguments: :test
+
+  results:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    name: Build Outcome
+    needs: [ build, cross-version-tests ]
+    steps:
+      - run: |
+          buildResult="${{ needs.build.result }}"
+          if [[ $buildResult != "success" && $buildResult != "skipped" ]]; then
+            exit 1
+          fi
+          crossVersionTestResult="${{ needs.cross-version-tests.result }}"
+          if [[ $crossVersionTestResult != "success" && $crossVersionTestResult != "skipped" ]]; then
+            exit 1
+          fi
+          exit 0
+
+

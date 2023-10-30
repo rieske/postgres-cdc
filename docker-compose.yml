@@ -3,7 +3,9 @@ version: '2.4'
 
 services:
   database:
-    build: lib/src/test/resources/postgres
+    build:
+      context: lib/src/test/resources/postgres
+      dockerfile: Dockerfile-16.0
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
