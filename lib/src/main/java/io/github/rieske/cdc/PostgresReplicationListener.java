@@ -31,7 +31,7 @@ public class PostgresReplicationListener {
 
     private final ExecutorService replicationStreamExecutor;
 
-    private final WalStreamConsumer walStreamConsumer;
+    private final ReplicationStreamConsumer replicationStreamConsumer;
 
 
     public PostgresReplicationListener(String jdbcUrl, String databaseUser, String databasePassword, String replicationSlotName, Consumer<ByteBuffer> consumer) {
@@ -51,10 +51,10 @@ public class PostgresReplicationListener {
             return thread;
         });
 
-        this.walStreamConsumer = new WalStreamConsumer(this::createConnection, replicationSlotName, consumer);
-        Runtime.getRuntime().addShutdownHook(new Thread(walStreamConsumer::stop));
+        this.replicationStreamConsumer = new ReplicationStreamConsumer(this::createConnection, replicationSlotName, consumer);
+        Runtime.getRuntime().addShutdownHook(new Thread(replicationStreamConsumer::stop));
 
-        replicationStreamExecutor.submit(walStreamConsumer);
+        replicationStreamExecutor.submit(replicationStreamConsumer);
     }
 
     public void createReplicationSlot() {
@@ -88,12 +88,12 @@ public class PostgresReplicationListener {
 
     public void start() {
         LOGGER.info("Starting replication stream listener on slot {}", replicationSlotName);
-        walStreamConsumer.start();
+        replicationStreamConsumer.start();
     }
 
     public void stop() {
         LOGGER.info("Stopping replication stream listener on slot {}", replicationSlotName);
-        walStreamConsumer.stop();
+        replicationStreamConsumer.stop();
         this.replicationStreamExecutor.shutdown();
         try {
             if (!replicationStreamExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
@@ -114,8 +114,8 @@ public class PostgresReplicationListener {
     }
 }
 
-class WalStreamConsumer implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WalStreamConsumer.class);
+class ReplicationStreamConsumer implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReplicationStreamConsumer.class);
 
     private final Supplier<PgConnection> connectionSupplier;
     private final String replicationSlotName;
@@ -123,7 +123,7 @@ class WalStreamConsumer implements Runnable {
 
     private volatile boolean running = false;
 
-    WalStreamConsumer(Supplier<PgConnection> connectionSupplier, String replicationSlotName, Consumer<ByteBuffer> consumer) {
+    ReplicationStreamConsumer(Supplier<PgConnection> connectionSupplier, String replicationSlotName, Consumer<ByteBuffer> consumer) {
         this.connectionSupplier = connectionSupplier;
         this.replicationSlotName = replicationSlotName;
         this.consumer = consumer;
