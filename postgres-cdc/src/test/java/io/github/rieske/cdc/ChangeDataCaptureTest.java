@@ -64,30 +64,30 @@ class ChangeDataCaptureTest {
         await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> assertThat(gatheringConsumer.consumedMessages).hasSize(2));
 
         DatabaseChange firstChange = gatheringConsumer.consumedMessages.get(0);
-        assertThat(firstChange.action).isEqualTo(DatabaseChange.Action.INSERT);
-        assertThat(firstChange.schema).isEqualTo("public");
-        assertThat(firstChange.table).isEqualTo("test_table");
-        assertThat(firstChange.columns.get("id")).isEqualTo(id1.toString());
-        assertThat(firstChange.columns.get("integer_field")).isEqualTo("1");
-        assertThat(firstChange.columns.get("text_field")).isEqualTo("text1");
-        assertThat(firstChange.columns.get("varchar_field")).isEqualTo("varchar1");
-        assertThat(firstChange.columns.get("char_field")).isEqualTo("char1     ");
-        assertThat(firstChange.columns.get("decimal_field")).isEqualTo("42.00");
-        assertThat(firstChange.columns.get("bool_field")).isEqualTo("false");
-        assertThat(firstChange.columns.get("updated_at")).isNotEmpty();
+        assertThat(firstChange.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.INSERT);
+        assertThat(firstChange.schema()).isEqualTo("public");
+        assertThat(firstChange.table()).isEqualTo("test_table");
+        assertThat(firstChange.columns().get("id")).isEqualTo(id1.toString());
+        assertThat(firstChange.columns().get("integer_field")).isEqualTo("1");
+        assertThat(firstChange.columns().get("text_field")).isEqualTo("text1");
+        assertThat(firstChange.columns().get("varchar_field")).isEqualTo("varchar1");
+        assertThat(firstChange.columns().get("char_field")).isEqualTo("char1     ");
+        assertThat(firstChange.columns().get("decimal_field")).isEqualTo("42.00");
+        assertThat(firstChange.columns().get("bool_field")).isEqualTo("false");
+        assertThat(firstChange.columns().get("updated_at")).isNotEmpty();
 
         DatabaseChange secondChange = gatheringConsumer.consumedMessages.get(1);
-        assertThat(secondChange.action).isEqualTo(DatabaseChange.Action.INSERT);
-        assertThat(secondChange.schema).isEqualTo("public");
-        assertThat(secondChange.table).isEqualTo("test_table");
-        assertThat(secondChange.columns.get("id")).isEqualTo(id2.toString());
-        assertThat(secondChange.columns.get("integer_field")).isEqualTo("42");
-        assertThat(secondChange.columns.get("text_field")).isEqualTo("text2");
-        assertThat(secondChange.columns.get("varchar_field")).isEqualTo("varchar2");
-        assertThat(secondChange.columns.get("char_field")).isEqualTo("char2     ");
-        assertThat(secondChange.columns.get("decimal_field")).isEqualTo("0.42");
-        assertThat(secondChange.columns.get("bool_field")).isEqualTo("true");
-        assertThat(secondChange.columns.get("updated_at")).isNotEmpty();
+        assertThat(secondChange.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.INSERT);
+        assertThat(secondChange.schema()).isEqualTo("public");
+        assertThat(secondChange.table()).isEqualTo("test_table");
+        assertThat(secondChange.columns().get("id")).isEqualTo(id2.toString());
+        assertThat(secondChange.columns().get("integer_field")).isEqualTo("42");
+        assertThat(secondChange.columns().get("text_field")).isEqualTo("text2");
+        assertThat(secondChange.columns().get("varchar_field")).isEqualTo("varchar2");
+        assertThat(secondChange.columns().get("char_field")).isEqualTo("char2     ");
+        assertThat(secondChange.columns().get("decimal_field")).isEqualTo("0.42");
+        assertThat(secondChange.columns().get("bool_field")).isEqualTo("true");
+        assertThat(secondChange.columns().get("updated_at")).isNotEmpty();
     }
 
     @Test
@@ -105,30 +105,30 @@ class ChangeDataCaptureTest {
         await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> assertThat(gatheringConsumer.consumedMessages).hasSize(2));
 
         DatabaseChange firstChange = gatheringConsumer.consumedMessages.get(0);
-        assertThat(firstChange.action).isEqualTo(DatabaseChange.Action.INSERT);
-        assertThat(firstChange.schema).isEqualTo("public");
-        assertThat(firstChange.table).isEqualTo("test_table");
-        assertThat(firstChange.columns.get("id")).isEqualTo(id.toString());
-        assertThat(firstChange.columns.get("integer_field")).isEqualTo("1");
-        assertThat(firstChange.columns.get("text_field")).isEqualTo("text1");
-        assertThat(firstChange.columns.get("varchar_field")).isEqualTo("varchar1");
-        assertThat(firstChange.columns.get("char_field")).isEqualTo("char1     ");
-        assertThat(firstChange.columns.get("decimal_field")).isEqualTo("42.00");
-        assertThat(firstChange.columns.get("bool_field")).isEqualTo("false");
-        assertThat(firstChange.columns.get("updated_at")).isNotEmpty();
+        assertThat(firstChange.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.INSERT);
+        assertThat(firstChange.schema()).isEqualTo("public");
+        assertThat(firstChange.table()).isEqualTo("test_table");
+        assertThat(firstChange.columns().get("id")).isEqualTo(id.toString());
+        assertThat(firstChange.columns().get("integer_field")).isEqualTo("1");
+        assertThat(firstChange.columns().get("text_field")).isEqualTo("text1");
+        assertThat(firstChange.columns().get("varchar_field")).isEqualTo("varchar1");
+        assertThat(firstChange.columns().get("char_field")).isEqualTo("char1     ");
+        assertThat(firstChange.columns().get("decimal_field")).isEqualTo("42.00");
+        assertThat(firstChange.columns().get("bool_field")).isEqualTo("false");
+        assertThat(firstChange.columns().get("updated_at")).isNotEmpty();
 
         DatabaseChange secondChange = gatheringConsumer.consumedMessages.get(1);
-        assertThat(secondChange.action).isEqualTo(DatabaseChange.Action.UPDATE);
-        assertThat(secondChange.schema).isEqualTo("public");
-        assertThat(secondChange.table).isEqualTo("test_table");
-        assertThat(secondChange.columns.get("id")).isEqualTo(id.toString());
-        assertThat(secondChange.columns.get("integer_field")).isEqualTo("1");
-        assertThat(secondChange.columns.get("text_field")).isEqualTo("text1");
-        assertThat(secondChange.columns.get("varchar_field")).isEqualTo("varchar1");
-        assertThat(secondChange.columns.get("char_field")).isNull();
-        assertThat(secondChange.columns.get("decimal_field")).isEqualTo("123.45");
-        assertThat(secondChange.columns.get("bool_field")).isEqualTo("true");
-        assertThat(secondChange.columns.get("updated_at")).isNotEmpty();
+        assertThat(secondChange.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.UPDATE);
+        assertThat(secondChange.schema()).isEqualTo("public");
+        assertThat(secondChange.table()).isEqualTo("test_table");
+        assertThat(secondChange.columns().get("id")).isEqualTo(id.toString());
+        assertThat(secondChange.columns().get("integer_field")).isEqualTo("1");
+        assertThat(secondChange.columns().get("text_field")).isEqualTo("text1");
+        assertThat(secondChange.columns().get("varchar_field")).isEqualTo("varchar1");
+        assertThat(secondChange.columns().get("char_field")).isNull();
+        assertThat(secondChange.columns().get("decimal_field")).isEqualTo("123.45");
+        assertThat(secondChange.columns().get("bool_field")).isEqualTo("true");
+        assertThat(secondChange.columns().get("updated_at")).isNotEmpty();
     }
 
     @Test

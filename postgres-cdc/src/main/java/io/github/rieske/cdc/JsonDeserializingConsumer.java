@@ -25,7 +25,7 @@ public class JsonDeserializingConsumer implements Consumer<ByteBuffer> {
         byte[] source = message.array();
         int length = source.length - offset;
         try {
-            DatabaseChange deserializedMessage = MAPPER.readValue(source, offset, length, DatabaseChange.class);
+            JsonDeserializedDatabaseChange deserializedMessage = MAPPER.readValue(source, offset, length, JsonDeserializedDatabaseChange.class);
             delegate.accept(deserializedMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);

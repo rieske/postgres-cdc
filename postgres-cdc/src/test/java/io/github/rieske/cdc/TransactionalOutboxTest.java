@@ -56,10 +56,10 @@ class TransactionalOutboxTest {
         await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> assertThat(gatheringConsumer.consumedMessages).hasSize(1));
 
         DatabaseChange event = gatheringConsumer.consumedMessages.get(0);
-        assertThat(event.action).isEqualTo(DatabaseChange.Action.INSERT);
-        assertThat(event.schema).isEqualTo("public");
-        assertThat(event.table).isEqualTo("test_entity_outbox");
-        assertThat(event.columns.get("event_payload")).isEqualTo(eventPayload);
+        assertThat(event.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.INSERT);
+        assertThat(event.schema()).isEqualTo("public");
+        assertThat(event.table()).isEqualTo("test_entity_outbox");
+        assertThat(event.columns().get("event_payload")).isEqualTo(eventPayload);
     }
 
     @Test
@@ -75,10 +75,10 @@ class TransactionalOutboxTest {
         await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> assertThat(gatheringConsumer.consumedMessages).hasSize(1));
 
         DatabaseChange event = gatheringConsumer.consumedMessages.get(0);
-        assertThat(event.action).isEqualTo(DatabaseChange.Action.INSERT);
-        assertThat(event.schema).isEqualTo("public");
-        assertThat(event.table).isEqualTo("test_entity_outbox");
-        assertThat(event.columns.get("event_payload")).isEqualTo(eventPayload);
+        assertThat(event.action()).isEqualTo(JsonDeserializedDatabaseChange.Action.INSERT);
+        assertThat(event.schema()).isEqualTo("public");
+        assertThat(event.table()).isEqualTo("test_entity_outbox");
+        assertThat(event.columns().get("event_payload")).isEqualTo(eventPayload);
     }
 
     private void insertIntoOutboxTable(Connection connection, String outboxTable, String eventPayload) {
