@@ -38,6 +38,10 @@ To install the plugin on a self-hosted instance, refer to the plugin's documenta
 
 ## Usage
 
+The public API consists of just two interfaces:
+- [DatabaseChange](postgres-cdc/src/main/java/io/github/rieske/cdc/DatabaseChange.java)
+- [ChangeDataCapture](postgres-cdc/src/main/java/io/github/rieske/cdc/ChangeDataCapture.java)
+
 ```java
 Consumer<DatabaseChange> cdcConsumer = databaseChange -> {
     // Do something useful here. Perhaps, relay the change to some message broker.
