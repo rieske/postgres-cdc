@@ -2,6 +2,8 @@ plugins {
     id("io.github.rieske.postgres-cdc.published-library")
 }
 
+description = "Stream changes from PostgreSQL database (Change Data Capture)."
+
 dependencies {
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("org.slf4j:slf4j-api:2.0.9")

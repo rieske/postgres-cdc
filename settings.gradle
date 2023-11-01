@@ -6,6 +6,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = 'postgres-cdc'
+rootProject.name = "postgres-cdc"
 
-include('lib')
+include("postgres-cdc")
