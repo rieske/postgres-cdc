@@ -34,7 +34,7 @@ jobs:
         env:
           POSTGRES_VERSION: ${{ matrix.postgres }}
         with:
-          arguments: :lib:test
+          arguments: :postgres-cdc:test
 
   results:
     if: ${{ always() }}
