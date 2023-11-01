@@ -17,6 +17,5 @@ testing {
 }
 
 tasks.withType(Javadoc).configureEach {
-    // TODO: figure the public API and document it!
-    //options.addStringOption("Xwerror", "-quiet")
+    options.addStringOption("Xwerror", "-quiet")
 }

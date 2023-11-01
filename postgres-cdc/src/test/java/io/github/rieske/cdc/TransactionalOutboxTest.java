@@ -23,27 +23,27 @@ class TransactionalOutboxTest {
     private final String testEntityOutboxTable = "test_entity_outbox";
     private final String anotherOutboxTable = "another_outbox";
 
-    private final GatheringConsumer<DatabaseChange> gatheringConsumer = TestConsumers.gathering();
+    private final GatheringConsumer<DatabaseChange> gatheringConsumer = new GatheringConsumer<>();
 
-    private final PostgresReplicationListener listener = new PostgresReplicationListener(
+    private final ChangeDataCapture cdc = ChangeDataCapture.create(
             database.jdbcUrl(),
             database.databaseUsername(),
             database.databasePassword(),
             replicationSlotName,
             Set.of("public." + testEntityOutboxTable),
-            TestConsumers.printing().andThen(new JsonDeserializingConsumer(gatheringConsumer))
+            gatheringConsumer
     );
 
     @BeforeEach
     void setup() {
-        listener.createReplicationSlot();
-        listener.start();
+        cdc.createReplicationSlot();
+        cdc.start();
     }
 
     @AfterEach
     void tearDown() {
-        listener.stop();
-        listener.dropReplicationSlot();
+        cdc.stop();
+        cdc.dropReplicationSlot();
     }
 
     @Test

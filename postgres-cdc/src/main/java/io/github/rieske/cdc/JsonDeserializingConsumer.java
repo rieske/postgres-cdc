@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class JsonDeserializingConsumer implements Consumer<ByteBuffer> {
+class JsonDeserializingConsumer implements Consumer<ByteBuffer> {
     private static final ObjectMapper MAPPER = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new JavaTimeModule());
 
     private final Consumer<DatabaseChange> delegate;
 
-    public JsonDeserializingConsumer(Consumer<DatabaseChange> delegate) {
+    JsonDeserializingConsumer(Consumer<DatabaseChange> delegate) {
         this.delegate = delegate;
     }
 

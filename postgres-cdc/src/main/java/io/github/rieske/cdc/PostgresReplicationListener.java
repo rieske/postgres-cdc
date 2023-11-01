@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class PostgresReplicationListener {
+class PostgresReplicationListener implements ChangeDataCapture {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresReplicationListener.class);
 
     // https://github.com/eulerto/wal2json
@@ -35,7 +35,7 @@ public class PostgresReplicationListener {
     private final ReplicationStreamConsumer replicationStreamConsumer;
 
 
-    public PostgresReplicationListener(
+    PostgresReplicationListener(
             String jdbcUrl,
             String databaseUser,
             String databasePassword,
@@ -65,6 +65,7 @@ public class PostgresReplicationListener {
         replicationStreamExecutor.submit(replicationStreamConsumer);
     }
 
+    @Override
     public void createReplicationSlot() {
         try (PgConnection connection = createConnection()) {
             LOGGER.info("Creating replications slot {}", replicationSlotName);
@@ -84,6 +85,7 @@ public class PostgresReplicationListener {
         }
     }
 
+    @Override
     public void dropReplicationSlot() {
         try (PgConnection connection = createConnection()) {
             LOGGER.info("Dropping replications slot {}", replicationSlotName);
@@ -94,11 +96,13 @@ public class PostgresReplicationListener {
         }
     }
 
+    @Override
     public void start() {
         LOGGER.info("Starting replication stream listener on slot {}", replicationSlotName);
         replicationStreamConsumer.start();
     }
 
+    @Override
     public void stop() {
         LOGGER.info("Stopping replication stream listener on slot {}", replicationSlotName);
         replicationStreamConsumer.stop();
