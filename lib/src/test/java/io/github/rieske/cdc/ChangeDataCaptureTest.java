@@ -6,17 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.math.BigDecimal;
-import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -27,30 +24,16 @@ class ChangeDataCaptureTest {
     final DatabaseExtension database = new DatabaseExtension();
 
     private final String replicationSlotName = "cdc_stream";
-    private final Consumer<ByteBuffer> printingConsumer = msg -> {
-        int offset = msg.arrayOffset();
-        byte[] source = msg.array();
-        int length = source.length - offset;
-        System.out.println(new String(source, offset, length));
-    };
 
-    private static class GatheringConsumer<T> implements Consumer<T> {
-        final List<T> consumedMessages = new CopyOnWriteArrayList<>();
-
-        @Override
-        public void accept(T message) {
-            consumedMessages.add(message);
-        }
-    }
-
-    private final GatheringConsumer<DatabaseChange> gatheringConsumer = new GatheringConsumer<>();
+    private final GatheringConsumer<DatabaseChange> gatheringConsumer = TestConsumers.gathering();
 
     private final PostgresReplicationListener listener = new PostgresReplicationListener(
             database.jdbcUrl(),
             database.databaseUsername(),
             database.databasePassword(),
             replicationSlotName,
-            printingConsumer.andThen(new JsonDeserializingConsumer(gatheringConsumer))
+            Set.of("public.test_table"),
+            TestConsumers.printing().andThen(new JsonDeserializingConsumer(gatheringConsumer))
     );
 
     @BeforeEach
@@ -173,9 +156,9 @@ class ChangeDataCaptureTest {
             Instant updatedAt
     ) {
         try (PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO test_table" +
-                             "(id, integer_field, text_field, varchar_field, char_field, decimal_field, bool_field, updated_at) " +
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                "INSERT INTO test_table" +
+                        "(id, integer_field, text_field, varchar_field, char_field, decimal_field, bool_field, updated_at) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
         ) {
             statement.setObject(1, id);
             statement.setInt(2, integerField);
@@ -203,10 +186,10 @@ class ChangeDataCaptureTest {
             Instant updatedAt
     ) {
         try (PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE test_table SET " +
-                             "integer_field=?, text_field=?, varchar_field=?, char_field=?, " +
-                             "decimal_field=?, bool_field=?, updated_at=? " +
-                             "WHERE id=?")
+                "UPDATE test_table SET " +
+                        "integer_field=?, text_field=?, varchar_field=?, char_field=?, " +
+                        "decimal_field=?, bool_field=?, updated_at=? " +
+                        "WHERE id=?")
         ) {
             statement.setInt(1, integerField);
             statement.setString(2, textField);
