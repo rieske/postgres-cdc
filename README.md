@@ -76,5 +76,5 @@ If a replication slot is no longer required, it should be dropped.
 In order to write integration tests for code that uses the `postgres-cdc` library, the test database
 must have logical replication enabled and have the `wal2json` plugin installed.
 
-Refer to the [test Dockerfiles](lib/src/test/resources/postgres/) in this repository that produce configured PostgreSQL images.
+Refer to the [test Dockerfiles](postgres-cdc/src/test/resources/postgres/) in this repository that produce configured PostgreSQL images.
 
