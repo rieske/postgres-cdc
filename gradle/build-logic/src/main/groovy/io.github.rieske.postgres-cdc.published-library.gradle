@@ -1,0 +1,52 @@
+plugins {
+    id("io.github.rieske.postgres-cdc.java-library")
+    id("maven-publish")
+    id("signing")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+            project.afterEvaluate {
+                pom {
+                    name = "${group}:${project.name}"
+                    description = "${project.description}"
+                    url = "https://github.com/rieske/postgres-cdc"
+                    licenses {
+                        license {
+                            name = "The Apache License, Version 2.0"
+                            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "rieske"
+                            name = "Vaidotas Valuckas"
+                            email = "vaidotas.valuckas@gmail.com"
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:git@github.com/rieske/postgres-cdc.git"
+                        developerConnection = "scm:git:ssh@github.com:rieske/postgres-cdc.git"
+                        url = "https://github.com/rieske/postgres-cdc"
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+            credentials(PasswordCredentials)
+        }
+    }
+}
+
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications.maven)
+}
+

@@ -1,9 +1,5 @@
 plugins {
-    id("java-library")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    id("io.github.rieske.postgres-cdc.published-library")
 }
 
 dependencies {
@@ -18,7 +14,6 @@ dependencies {
 testing {
     suites {
         test {
-            useJUnitJupiter()
             dependencies {
                 implementation("org.testcontainers:postgresql:1.19.1")
                 implementation("org.assertj:assertj-core:3.24.2")
