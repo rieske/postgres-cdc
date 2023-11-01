@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +35,14 @@ public class PostgresReplicationListener {
     private final ReplicationStreamConsumer replicationStreamConsumer;
 
 
-    public PostgresReplicationListener(String jdbcUrl, String databaseUser, String databasePassword, String replicationSlotName, Consumer<ByteBuffer> consumer) {
+    public PostgresReplicationListener(
+            String jdbcUrl,
+            String databaseUser,
+            String databasePassword,
+            String replicationSlotName,
+            Set<String> tablesToListenTo,
+            Consumer<ByteBuffer> consumer
+    ) {
         this.jdbcUrl = jdbcUrl;
         this.replicationSlotName = replicationSlotName;
 
@@ -51,7 +59,7 @@ public class PostgresReplicationListener {
             return thread;
         });
 
-        this.replicationStreamConsumer = new ReplicationStreamConsumer(this::createConnection, replicationSlotName, consumer);
+        this.replicationStreamConsumer = new ReplicationStreamConsumer(this::createConnection, replicationSlotName, tablesToListenTo, consumer);
         Runtime.getRuntime().addShutdownHook(new Thread(replicationStreamConsumer::stop));
 
         replicationStreamExecutor.submit(replicationStreamConsumer);
@@ -119,13 +127,20 @@ class ReplicationStreamConsumer implements Runnable {
 
     private final Supplier<PgConnection> connectionSupplier;
     private final String replicationSlotName;
+    private final Set<String> tablesToListenTo;
     private final Consumer<ByteBuffer> consumer;
 
     private volatile boolean running = false;
 
-    ReplicationStreamConsumer(Supplier<PgConnection> connectionSupplier, String replicationSlotName, Consumer<ByteBuffer> consumer) {
+    ReplicationStreamConsumer(
+            Supplier<PgConnection> connectionSupplier,
+            String replicationSlotName,
+            Set<String> tablesToListenTo,
+            Consumer<ByteBuffer> consumer
+    ) {
         this.connectionSupplier = connectionSupplier;
         this.replicationSlotName = replicationSlotName;
+        this.tablesToListenTo = tablesToListenTo;
         this.consumer = consumer;
     }
 
@@ -196,6 +211,7 @@ class ReplicationStreamConsumer implements Runnable {
                 .withSlotOption("format-version", 2)
                 .withSlotOption("include-transaction", false)
                 .withSlotOption("include-timestamp", true)
+                .withSlotOption("add-tables", String.join(",", tablesToListenTo))
                 .withStatusInterval(10, TimeUnit.SECONDS)
                 .start();
     }

@@ -28,7 +28,7 @@ public class DatabaseExtension implements BeforeEachCallback, AfterEachCallback 
     private static final int DB_PORT = 5432;
     private static final String DEFAULT_DATABASE = "postgres";
 
-    private static String POSTGRES_VERSION = System.getenv("POSTGRES_VERSION");
+    private static final String POSTGRES_VERSION = System.getenv("POSTGRES_VERSION");
 
     private static final GenericContainer<?> DB_CONTAINER = new GenericContainer<>(
             new ImageFromDockerfile("postgres-cdc-test")
