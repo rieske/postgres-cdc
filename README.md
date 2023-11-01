@@ -38,6 +38,38 @@ To install the plugin on a self-hosted instance, refer to the plugin's documenta
 
 ## Usage
 
+```java
+Consumer<DatabaseChange> cdcConsumer = databaseChange -> {
+    // Do something useful here. Perhaps, relay the change to some message broker.
+    System.out.println(databaseChange);
+};
+
+ChangeDataCapture cdc = ChangeDataCapture.create(
+        jdbcUrl,
+        databaseUser,
+        databasePassword,
+        replicationSlotName,
+        Set.of("public.some_table", "public.some_other_table"),
+        cdcConsumer
+);
+
+// safe to call if the slot already exists
+cdc.createReplicationSlot();
+        
+// make sure the streaming is stopped gracefully on SIGTERM
+Runtime.getRuntime().addShutdownHook(new Thread(() -> cdc.stop()));
+
+// start streaming changes to the consumer
+cdc.start();
+```
+
+As long as the replication slot exists, unconsumed/unacknowledged changes will pile up.
+When a consumer is stopped, no change will be lost, and the next consumer will start consuming
+from the last unacknowledged change.
+
+Note: leaving the replication slot without a consumer for an extended period of time will consume database
+instance's storage space and in extreme cases can cause the database to shut down.
+If a replication slot is no longer required, it should be dropped.
 
 ## Testing
 
