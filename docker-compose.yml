@@ -4,7 +4,7 @@ version: '2.4'
 services:
   database:
     build:
-      context: lib/src/test/resources/postgres
+      context: postgres-cdc/src/test/resources/postgres
       dockerfile: Dockerfile-16.0
     environment:
       POSTGRES_USER: test
@@ -13,7 +13,6 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     network_mode: host
-    command: [ "postgres", "-c", "wal_level=logical" ]
 
 volumes:
   data:
