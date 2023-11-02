@@ -3,6 +3,8 @@
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.rieske.cdc/postgres-cdc)
 [![Actions Status](https://github.com/rieske/postgres-cdc/workflows/master/badge.svg)](https://github.com/rieske/postgres-cdc/actions)
 
+Maven Central coordinates: [`io.github.rieske.cdc:postgres-cdc`](https://mvnrepository.com/artifact/io.github.rieske.cdc/postgres-cdc)
+
 Java library that utilizes [PostgreSQL logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
 feature to implement [Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture).
 
