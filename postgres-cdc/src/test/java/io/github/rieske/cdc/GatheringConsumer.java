@@ -1,6 +1,5 @@
 package io.github.rieske.cdc;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
