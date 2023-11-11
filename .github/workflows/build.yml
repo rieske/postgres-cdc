@@ -1,20 +1,20 @@
-on:
-  workflow_call:
+on: workflow_call
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Build
-        uses: burrunan/gradle-cache-action@v1
-        with:
-          arguments: build
+        run: ./gradlew build
 
   cross-version-tests:
     needs: [ build ]
@@ -23,18 +23,19 @@ jobs:
       matrix:
         postgres: ["16.0", "15.4", "14.9", "13.12"]
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Test PostgreSQL versions
-        uses: burrunan/gradle-cache-action@v1
+        run: ./gradlew :postgres-cdc:test
         env:
           POSTGRES_VERSION: ${{ matrix.postgres }}
-        with:
-          arguments: :postgres-cdc:test
 
   results:
     if: ${{ always() }}
