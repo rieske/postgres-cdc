@@ -17,7 +17,7 @@ testing {
     suites {
         test {
             dependencies {
-                implementation("org.testcontainers:postgresql:1.19.1")
+                implementation("org.testcontainers:postgresql:1.19.3")
                 implementation("org.assertj:assertj-core:3.24.2")
                 implementation("org.flywaydb:flyway-core:9.22.3")
                 implementation("org.awaitility:awaitility:4.2.0")
