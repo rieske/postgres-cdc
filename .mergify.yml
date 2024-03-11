@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: automatic merge for Renovate pull requests
+    conditions:
+      - author=renovate[bot]
+      - base=master
+      - check-success=build / Build Outcome
+    actions:
+      merge:
+        method: merge
