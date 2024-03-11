@@ -6,4 +6,4 @@ pull_request_rules:
       - check-success=build / Build Outcome
     actions:
       merge:
-        method: merge
+        method: squash
