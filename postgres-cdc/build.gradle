@@ -21,7 +21,7 @@ testing {
                 implementation("org.assertj:assertj-core:3.26.3")
                 implementation("org.flywaydb:flyway-core:9.22.3")
                 implementation("org.awaitility:awaitility:4.2.2")
-                implementation("ch.qos.logback:logback-classic:1.5.6")
+                implementation("ch.qos.logback:logback-classic:1.5.7")
             }
             targets {
                 all {
