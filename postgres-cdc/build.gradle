@@ -19,7 +19,7 @@ testing {
             dependencies {
                 implementation("org.testcontainers:postgresql:1.20.4")
                 implementation("org.assertj:assertj-core:3.26.3")
-                implementation("org.flywaydb:flyway-core:9.22.3")
+                implementation("org.flywaydb:flyway-core:11.1.0")
                 implementation("org.awaitility:awaitility:4.2.2")
                 implementation("ch.qos.logback:logback-classic:1.5.12")
             }
