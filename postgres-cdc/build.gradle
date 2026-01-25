@@ -5,10 +5,10 @@ plugins {
 description = "Stream changes from PostgreSQL database (Change Data Capture)."
 
 dependencies {
-    implementation("org.postgresql:postgresql:42.7.4")
-    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("org.postgresql:postgresql:42.7.9")
+    implementation("org.slf4j:slf4j-api:2.0.17")
 
-    implementation(platform("com.fasterxml.jackson:jackson-bom:2.18.2"))
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.21.0"))
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
@@ -17,11 +17,11 @@ testing {
     suites {
         test {
             dependencies {
-                implementation("org.testcontainers:postgresql:1.20.4")
-                implementation("org.assertj:assertj-core:3.26.3")
+                implementation("org.testcontainers:postgresql:1.21.4")
+                implementation("org.assertj:assertj-core:3.27.7")
                 implementation("org.flywaydb:flyway-core:9.22.3")
-                implementation("org.awaitility:awaitility:4.2.2")
-                implementation("ch.qos.logback:logback-classic:1.5.12")
+                implementation("org.awaitility:awaitility:4.3.0")
+                implementation("ch.qos.logback:logback-classic:1.5.25")
             }
             targets {
                 all {

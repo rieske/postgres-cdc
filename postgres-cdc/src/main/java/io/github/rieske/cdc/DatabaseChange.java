@@ -9,21 +9,29 @@ import java.util.Map;
 public interface DatabaseChange {
 
     /**
-     * @return the INSERT/UPDATE/DELETE/TRUNCATE action that yielded this change.
+     * The INSERT/UPDATE/DELETE/TRUNCATE action that yielded this change.
+     *
+     * @return the action name.
      */
     Action action();
 
     /**
-     * @return the schema where this change originated.
+     * The schema where this change originated.
+     *
+     * @return the schema name.
      */
     String schema();
 
     /**
-     * @return the table where this change originated.
+     * The table where this change originated.
+     *
+     * @return the table name.
      */
     String table();
 
     /**
+     * Column names and their values as from the database change.
+     *
      * @return a Map of column names and their values as Strings from the database change.
      *  Contains all columns from the changed table - both changed and unchanged.
      */
