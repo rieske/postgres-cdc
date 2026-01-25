@@ -12,7 +12,7 @@ jobs:
           java-version: 11
           distribution: temurin
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
       - name: Build
         run: ./gradlew build
 
@@ -31,7 +31,7 @@ jobs:
           java-version: 11
           distribution: temurin
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
       - name: Test PostgreSQL versions
         run: ./gradlew :postgres-cdc:test
         env:
