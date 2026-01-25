@@ -1,9 +1,9 @@
-FROM postgres:14.9-alpine
+FROM postgres:14.20-alpine
 
-ENV WAL2JSON_TAG=wal2json_2_5
+ENV WAL2JSON_TAG=wal2json_2_6
 
 # Compile and install the wal2json plugin
-RUN apk add --no-cache --virtual .build-deps clang15 llvm15 git make musl-dev \
+RUN apk add --no-cache --virtual .build-deps clang19 llvm19 git make musl-dev \
     && git clone --depth 1 --branch $WAL2JSON_TAG https://github.com/eulerto/wal2json \
     && (cd /wal2json && make && make install) \
     && rm -rf wal2json \

@@ -1,6 +1,6 @@
-FROM postgres:16-alpine
+FROM postgres:18.1-alpine
 
-ENV WAL2JSON_TAG=wal2json_2_5
+ENV WAL2JSON_TAG=wal2json_2_6
 
 # Compile and install the wal2json plugin
 RUN apk add --no-cache --virtual .build-deps clang19 llvm19 git make musl-dev \
