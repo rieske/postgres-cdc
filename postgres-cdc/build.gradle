@@ -5,7 +5,7 @@ plugins {
 description = "Stream changes from PostgreSQL database (Change Data Capture)."
 
 dependencies {
-    implementation("org.postgresql:postgresql:42.7.4")
+    implementation("org.postgresql:postgresql:42.7.9")
     implementation("org.slf4j:slf4j-api:2.0.16")
 
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.18.2"))
