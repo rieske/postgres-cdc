@@ -5,7 +5,7 @@ services:
   database:
     build:
       context: postgres-cdc/src/test/resources/postgres
-      dockerfile: Dockerfile-16.0
+      dockerfile: Dockerfile-18
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test

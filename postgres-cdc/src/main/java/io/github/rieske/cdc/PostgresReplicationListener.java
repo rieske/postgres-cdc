@@ -204,7 +204,7 @@ class ReplicationStreamConsumer implements Runnable {
                 stream.setFlushedLSN(stream.getLastReceiveLSN());
                 stream.forceUpdateStatus();
             } catch (Exception e) {
-                LOGGER.warn("Could not consume database change event from replication slot" + replicationSlotName, e);
+                LOGGER.warn("Could not consume database change event from replication slot {}", replicationSlotName, e);
             }
         }
         LOGGER.info("Replication slot {} consumer was stopped", replicationSlotName);
