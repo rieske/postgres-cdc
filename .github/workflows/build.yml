@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
@@ -24,7 +24,7 @@ jobs:
         postgres: ["18", "17", "16", "15", "14", "13"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
